@@ -36,6 +36,12 @@ const UserSchema = new Schema({
         unique: true,
         trim: true,
     },
+    watchHistory: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Video"
+        }
+    ],
     refreshToken: {
         type: String,
         default: "",
