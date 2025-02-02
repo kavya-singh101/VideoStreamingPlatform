@@ -1,6 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+
+dotenv.config({
+    path: "./.env"
+});
 
 const UserSchema = new Schema({
     username: {
@@ -50,6 +55,8 @@ const UserSchema = new Schema({
 }, { timestamps: true });
 
 
+// the below code is used to hash the password before saving it to the database and the use of isModified method is used to check if the password is modified or not
+
 UserSchema.pre("save", async function (next) {
     if (!this.isModified("password")) {
         next();
@@ -69,9 +76,9 @@ UserSchema.methods.generateAccessToken = async function () {
         username: this.username,
         fullname: this.fullname,
     },
-        process.env.ACCESS_TOKEN_SECRET,
+        `${process.env.ACCESS_TOKEN_SECRET}`,
         {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRES
+            expiresIn: `${process.env.ACCESS_TOKEN_EXPIRES}`
         }
     )
 }
@@ -80,9 +87,9 @@ UserSchema.methods.generateRefreshToken = function () {
     return jwt.sign({
         _id: this._id,
     },
-        process.env.REFRESH_TOKEN_SECRET,
+        `${process.env.REFRESH_TOKEN_SECRET}`,
         {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRES
+            expiresIn: `${process.env.REFRESH_TOKEN_EXPIRES}`
         }
     )
 }
